@@ -22,25 +22,25 @@ public class Project {
      */
     public Project(Long id, String Codiceordine, String NomeUtente, Instant timestamp) {
         this.id = id;
-        this.Codiceordine= Codiceordine;
+        this.Codiceordine = Codiceordine;
         this.NomeUtente = NomeUtente;
         this.timestamp = timestamp;
     }
     /* Qui abbiamo il metodi get, in quanto, come specificato prima, l'utente non deve avere accesso diretto alle variabili.
     * Questi metodi servono per leggere i dati che abbiamo inserito tramite costruttore*/
     public Long getId() {
-        return id;
+        return this.id;
     }
 
     public String getCode() {
-        return Codiceordine;
+        return this.Codiceordine;
     }
 
     public String getNomeUtente() {
-        return NomeUtente;
+        return this.NomeUtente;
     }
 
     public Instant getTimestamp() {
-        return timestamp;
+        return this.timestamp;
     }
 }

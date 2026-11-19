@@ -1,4 +1,4 @@
-/*Includiamo come al solito i package e le librerie neccessarie.
+/*Includiamo come al solito i package e le librerie necessarie.
  In questo caso, project service restituisce i dati del progetto in questione, in base al nome e al codice del progetto stesso.
  Il risultato sarà poi passato a Project Response e infine, all'utente in formato JSON*/
 
@@ -28,8 +28,8 @@ public class ProjectService {
     public ProjectResponse createProject(CreateProjectRequest request) {
         Project project = new Project(
                 this.nextId,
-                request.getCode(),
-                request.getName(),
+                request.getCodiceP(),
+                request.getNome(),
                 Instant.now()
         );
         this.nextId++;
@@ -61,4 +61,3 @@ public class ProjectService {
         return responses;
     }
 }
-

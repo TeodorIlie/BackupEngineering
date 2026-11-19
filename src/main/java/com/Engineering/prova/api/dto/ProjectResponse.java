@@ -23,18 +23,18 @@ public class ProjectResponse {
     }
 
     public Long getId() {
-        return id;
+        return this.id;
     }
 
-    public String getCode() {
-        return CodiceOrdine;
+    public String getCodiceOrdine() {
+        return this.CodiceOrdine;
     }
 
-    public String getName() {
-        return NomeUtente;
+    public String getNomeUtente() {
+        return this.NomeUtente;
     }
 
-    public Instant getCreatedAt() {
-        return timestamp;
+    public Instant getTimestamp() {
+        return this.timestamp;
     }
 }
