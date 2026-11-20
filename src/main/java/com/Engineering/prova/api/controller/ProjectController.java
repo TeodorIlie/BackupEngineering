@@ -11,27 +11,27 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/projects") // la cartella a cui dobbiamo accedere per poter far funzionare il controller
-@SuppressWarnings("all") // per evitare che il compilatore possa dare falsi positivi
+@RequestMapping("/api/projects") // indirizzo base del controller
+@SuppressWarnings("all") // evita falsi avvisi dell'IDE
 public class ProjectController {
 
-    // definiamo una variabile service, necessaria per il funzionamento del controller
-    private final ProjectService service;
+    // gestore della logica dei progetti
+    private final ProjectService gestoreProgetti;
 
-    // richiamiamo il costruttore affinché la variabile service riceva la richiesta che vogliamo fare al server
-    public ProjectController(ProjectService service) {
-        this.service = service;
+    // il costruttore collega automaticamente il gestore dei progetti al controller
+    public ProjectController(ProjectService gestoreProgetti) {
+        this.gestoreProgetti = gestoreProgetti;
     }
 
-    // si richiama un metodo HTTP POST, che risponde con un progetto che abbiamo richiesto al service
+    // crea un nuovo progetto ricevendo i dati dal client
     @PostMapping
-    public ProjectResponse create(@Valid @RequestBody CreateProjectRequest request) {
-        return this.service.createProject(request);
+    public ProjectResponse creaProgetto(@Valid @RequestBody CreateProjectRequest datiProgetto) {
+        return this.gestoreProgetti.createProject(datiProgetto);
     }
 
-    // si usa un metodo HTTP GET per raccogliere tutti i progetti di nostro interesse
+    // restituisce la lista di tutti i progetti salvati
     @GetMapping
-    public List<ProjectResponse> getAll() {
-        return this.service.getAllProjects();
+    public List<ProjectResponse> leggiTuttiIProgetti() {
+        return this.gestoreProgetti.getAllProjects();
     }
 }
