@@ -1,12 +1,24 @@
-/*Come nel caso di ProjectRepository, vogliamo creare un'interfaccia per i task.
- Vogliamo usare i metodi di TaskEntity senza sapere come siano fatti.*/
+/* Dato che interagire direttamente con TaskEntity può risultare complesso, creiamo questa interfaccia
+   che nasconde la logica di accesso ai dati.
+   Estendendo JpaRepository, ereditiamo automaticamente tutti i metodi standard per leggere,
+   salvare, filtrare (anche tramite Query by Example) e impaginare i task nel database senza scrivere query SQL. */
 package com.Engineering.prova.persistence;
 
-import com.Engineering.prova.domain.model.Task;
+import com.Engineering.prova.domain.model.Priority;
+import com.Engineering.prova.domain.model.TaskStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 
-//L'interfaccia eredita i metodi della classe. Basterà semplicemente definire l'id del task, e potremo modificarlo con i metodi implementati, senza sapere come siano fatti
-// E' stato aggiunto JpaSpecification in quanto, qualora volessimo trovare un task specifico, basterebbe richiamare un metodo di questa classe, anziché richiamare continuamente la funzione find per ogni parametro
-public interface TaskRepository extends JpaRepository<TaskEntity, Long>, JpaSpecificationExecutor<Task> {
+import java.util.List;
+
+public interface TaskRepository extends JpaRepository<TaskEntity, Long> {
+
+    List<TaskEntity> findByProgettoId(Long idProgetto); // trova il progetto attraverso il suo ID
+
+    List<TaskEntity> findByStato(TaskStatus stato); //trova il progetto in base al suo stato (vedi TaskStatus)
+
+    List<TaskEntity> findByPriorita(Priority priorita); //trova il progetto in base alla sua priorità (vedi Priority)
+
+    List<TaskEntity> findByTitoloContainingIgnoreCase(String titolo); //Trova il progetto in base al suo titolo. Ignora la differenza tra caratteri maiuscoli e minuscoli
+
+    List<TaskEntity> findByProgettoCodiceIgnoreCase(String code); //trova il progetto in base al codice Ignora la differenza tra caratteri maiuscoli e minuscoli
 }

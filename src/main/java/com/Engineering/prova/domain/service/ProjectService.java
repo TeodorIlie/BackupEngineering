@@ -9,8 +9,10 @@ import com.Engineering.prova.api.dto.CreateProjectRequest;
 import com.Engineering.prova.api.dto.ProjectResponse;
 import com.Engineering.prova.persistence.ProjectEntity;
 import com.Engineering.prova.persistence.ProjectRepository;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,15 +34,24 @@ public class ProjectService {
     // la scritta Transactional ci dice inoltre che il progetto dev'essere creato per intero, e trasferito dal programma al DB
     @Transactional
     public ProjectResponse createProject(CreateProjectRequest datiInIngresso) {
+        // associa alla variabile codicePulito il codice che abbiamo associato al nostro progetto.
+        // la funzione trim serve per eliminare eventuali spazi lasciati all'inizio o alla fine
+        String codicePulito = datiInIngresso.getCodiceP().trim();
+
+        // Controlla se nel DB esista un altro progetto con lo stesso ID. In caso affermativo, il sistema restituisce errore tramite l'eccezione, ed un messaggio con il codice appena inserito
+        if (this.archivioProgetti.existsByCodiceIgnoreCase(codicePulito)) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Esiste già un progetto con codice: " + codicePulito);
+        }
+
         ProjectEntity nuovoProgetto = new ProjectEntity();
         nuovoProgetto.setNome(datiInIngresso.getNome());
-        nuovoProgetto.setDescrizione(datiInIngresso.getCodiceP());
+        nuovoProgetto.setCodice(codicePulito);
 
         ProjectEntity progettoSalvato = this.archivioProgetti.save(nuovoProgetto);
 // Restituisce al DB il progetto inserito nel programma
         return new ProjectResponse(
                 progettoSalvato.getId(),
-                progettoSalvato.getDescrizione(),
+                progettoSalvato.getCodice(),
                 progettoSalvato.getNome(),
                 progettoSalvato.getCreatoIl()
         );
@@ -55,7 +66,7 @@ public class ProjectService {
         for (ProjectEntity progetto : this.archivioProgetti.findAll()) {
             ProjectResponse risposta = new ProjectResponse(
                     progetto.getId(),
-                    progetto.getDescrizione(),
+                    progetto.getCodice(),
                     progetto.getNome(),
                     progetto.getCreatoIl()
             );

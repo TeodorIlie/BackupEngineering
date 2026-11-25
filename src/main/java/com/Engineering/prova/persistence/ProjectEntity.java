@@ -10,9 +10,13 @@ import java.time.Instant;
 @SuppressWarnings("all")// per evitare falsi positivi
 public class ProjectEntity {
 
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY) //collega l'attributo id dell'entità all'id del progetto. L'ID dev'essere univoco!
     private Long id;
+
+    @Column(name = "code", nullable = false, unique = true, length = 20)
+    private String codice;
 
     @Column(nullable = false, length = 120)//Consente di scrivere il nome del progetto nel DB. Massima lunghezza: 120. Il nome va messo!
     private String nome;
@@ -50,7 +54,13 @@ public class ProjectEntity {
     Di conseguenza, devono essere definiti tutti i metodi get e set per poter leggere o sovrascrivere o dati all'interno del DB.
     Quindi, chiamando questi metodi possiamo modificare timestamp, nome, descrizione... del progetto
     */
+    public String getCodice() {
+        return codice;
+    }
 
+    public void setCodice(String codice) {
+        this.codice = codice;
+    }
     public Long getId() {
         return id;
     }

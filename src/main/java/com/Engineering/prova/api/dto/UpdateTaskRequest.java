@@ -31,9 +31,19 @@ public class UpdateTaskRequest {
 /* Anche in questo caso, dato che le variabili sono private,
  è neccessario usare i metodi get e set per accedervi.
  Qui sotto inoltre troviamo il costruttore*/
+
+    // Costruttore vuoto per aggiornare un task
     public UpdateTaskRequest() {
     }
 
+    // Costruttore completo per aggiornare un task. Usato nei test
+    public  UpdateTaskRequest(String titolo, String descrizione, TaskStatus stato, Priority priorita, LocalDate scadenza) {
+        this.titolo = titolo;
+        this.descrizione = descrizione;
+        this.stato = stato;
+        this.priorita = priorita;
+        this.scadenza = scadenza;
+    }
     public String getTitolo() {
         return this.titolo;
     }

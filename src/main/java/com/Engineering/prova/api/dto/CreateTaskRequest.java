@@ -28,11 +28,24 @@ import java.time.LocalDate;
         private TaskStatus stato;
         private Priority priorita;
         private LocalDate scadenza;
-// qui viene definito il costruttore
-        public CreateTaskRequest() {
+
+// Costruttore vuoto
+    public CreateTaskRequest() {
+    }
+
+        // Costruttore completo per itest
+        public CreateTaskRequest(Long idProgetto, String titolo, String descrizione, TaskStatus stato, Priority priorita, LocalDate scadenza) {
+            this.idProgetto = idProgetto;
+            this.titolo = titolo;
+            this.descrizione = descrizione;
+            this.stato = stato;
+            this.priorita = priorita;
+            this.scadenza = scadenza;
         }
-/* Qui sotto abbiamo i soliti metodi get e set.
- Questi metodi sono neccessari in quanto, senza di essi, l'utente non potrebbe modificare o inserire i parametri per creare il task*/
+
+
+        /* Qui sotto abbiamo i soliti metodi get e set.
+         Questi metodi sono neccessari in quanto, senza di essi, l'utente non potrebbe modificare o inserire i parametri per creare il task*/
         public Long getIdProgetto() {
             return this.idProgetto;
         }

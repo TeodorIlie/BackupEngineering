@@ -4,7 +4,9 @@ package com.Engineering.prova.api.controller;
 
 import com.Engineering.prova.api.dto.CreateProjectRequest;
 import com.Engineering.prova.api.dto.ProjectResponse;
+import com.Engineering.prova.api.dto.TaskResponse;
 import com.Engineering.prova.domain.service.ProjectService;
+import com.Engineering.prova.domain.service.TaskService;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,10 +19,13 @@ public class ProjectController {
 
     // gestore della logica dei progetti
     private final ProjectService gestoreProgetti;
+    // gestore della logica dei task
+    private final TaskService gestoreTask;
 
-    // il costruttore collega automaticamente il gestore dei progetti al controller
-    public ProjectController(ProjectService gestoreProgetti) {
+    // il costruttore collega automaticamente i gestori al controller
+    public ProjectController(ProjectService gestoreProgetti, TaskService gestoreTask) {
         this.gestoreProgetti = gestoreProgetti;
+        this.gestoreTask = gestoreTask;
     }
 
     // crea un nuovo progetto ricevendo i dati dal client
@@ -33,5 +38,11 @@ public class ProjectController {
     @GetMapping
     public List<ProjectResponse> leggiTuttiIProgetti() {
         return this.gestoreProgetti.getAllProjects();
+    }
+
+    // restituisce tutti i task associati a uno specifico progetto (404 se il progetto non esiste)
+    @GetMapping("/{id}/tasks")
+    public List<TaskResponse> leggiTaskDelProgetto(@PathVariable Long id) {
+        return this.gestoreTask.trovaPerProgetto(id);
     }
 }

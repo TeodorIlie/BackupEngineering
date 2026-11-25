@@ -1,6 +1,3 @@
-/*Questa classe implementa la classe ApiErrorResponse per gestire i principali problemi che si possono verificare
-come al solito, vengono inclusi package e librerie utili allo scopo.
-L'obiettivo è creare un sistema unificato che possa gestire le situazioni critiche più ricorrenti*/
 package com.Engineering.prova.api.exception;
 
 import com.Engineering.prova.domain.exception.TaskNotFoundException;
@@ -10,6 +7,7 @@ import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.time.Instant;
 
@@ -39,11 +37,26 @@ public class GlobalExceptionHandler {
 
     /* Anche in questo caso, come visto poco sopra, l'errore è di tipo 400.
     In questo caso però, l'errore è provocato da un file JSON non valido.
-    Il file JSON contiene i dati e le direttive che, succesivamente, vengono convertite in classi, per esmepio, in Java.
+    Il file JSON contiene i dati e le direttive che, succesivamente, vengono convertite in classi, per esempio, in Java.
     Qualora questo file non fosse corretto, l'esecuzione non può proseguire*/
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public ResponseEntity<ApiErrorResponse> jsonNonValido(HttpMessageNotReadableException ex, HttpServletRequest req) {
         return creaRisposta(400, "JSON malformato o valore non valido", req);
+    }
+
+    /* Eccezione che si genera quando due processi cercano di accedere una risorsa identica.
+     Ad esenpio, se due processi avessero lo stesso codice, questa funzione restituirebbe un errore 409 seguito da un opportuno messaggio.
+     */
+    @ExceptionHandler(ResponseStatusException.class)
+    public ResponseEntity<ApiErrorResponse> conflittoOStatoEsplicito(ResponseStatusException ex, HttpServletRequest req) {
+        return creaRisposta(ex.getStatusCode().value(), ex.getReason(), req);
+    }
+
+    /* Restituisce errore 400 qualora i parametri inseriti dall'utente fossero non validi.
+     Per esempio, se un'utente provasse ad inserire un codice del progetto vioto. */
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<ApiErrorResponse> parametroNonValido(IllegalArgumentException ex, HttpServletRequest req) {
+        return creaRisposta(400, ex.getMessage(), req);
     }
 
     /* Questa funzione ha lo scopo di generare un generica eccezione.
