@@ -1,7 +1,19 @@
-teodorilie@TILIE-W prova % curl -i http://localhost:8080/actuator/health
-HTTP/1.1 200
-Content-Type: application/vnd.spring-boot.actuator.v3+json
-Transfer-Encoding: chunked
-Date: Wed, 18 Nov 2026 16:35:33 GMT
+# Project & Task Management API
 
-{"components":{"diskSpace":{"details":{"total":494384795648,"free":334254145536,"threshold":10485760,"path":"/Users/teodorilie/Downloads/prova/.","exists":true},"status":"UP"},"livenessState":{"status":"UP"},"ping":{"status":"UP"},"readinessState":{"status":"UP"},"ssl":{"details":{"expiringChains":[],"invalidChains":[],"validChains":[]},"status":"UP"}},"groups":["liveness","readiness"],"status":"UP"}% # ProvaEngineering
+Backend RESTful sviluppato con **Spring Boot 4** per la gestione di progetti e relativi task, completo di persistenza su **PostgreSQL**, migrazioni versionate con **Flyway**, documentazione **OpenAPI/Swagger** e suite di test automatizzati.
+
+## Stack Tecnologico
+- **Java 21** & **Spring Boot 4.1.2**
+- **Spring Web MVC** & **Bean Validation**
+- **Spring Data JPA / Hibernate**
+- **PostgreSQL 16** (produzione/locale) & **H2 Database** (test)
+- **Flyway** (migrazioni SQL `V1`, `V2`, `V3`)
+- **SpringDoc OpenAPI 3 (Swagger UI)**
+- **JUnit 5**, **Mockito** & **MockMvc**
+- **Docker** & **Docker Compose**
+
+## Avvio Rapido
+
+### Con Docker Compose (consigliato)
+```bash
+docker compose up --build
