@@ -4,7 +4,6 @@ package com.Engineering.prova.security;
 
 import com.Engineering.prova.persistence.UserEntity;
 import com.Engineering.prova.persistence.UserRepository;
-import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -14,10 +13,13 @@ import org.springframework.stereotype.Service;
 import java.util.Optional;
 
 @Service
-@RequiredArgsConstructor// il costruttore richiede l'inserimento dei parametri in ingresso
 public class CustomUserDetailsService implements UserDetailsService {
 
     private final UserRepository userRepository; // Contenitore che contiene i dati degli utenti registrati
+
+    public CustomUserDetailsService(UserRepository userRepository) { // il costruttore richiede l'inserimento dei parametri in ingresso
+        this.userRepository = userRepository;
+    }
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
