@@ -1,61 +1,40 @@
-/* Immaginiamo che un utente possa avviare una sessione. Questa sessione è salvata all'interno di un cookie.
- Un malintenzionato potrebbe intercettare i cookie e quindi la sessione dell'utente, rubando quindi di conseguenza tutti i dati che l'utente ha.
- Questo attacco è chiamato CSRF.
- Per evitare questi tipi di attacchi si usano dei token di tipo JWT.
- Il token ed il tempo di valenza è già stato stabilito nel file di proprietà del progetto.
- Come al solito, includiamo i package necessari, tra cui quelli per gestire i token JWT*/
+/* Una volta stabilito che il token sia valido, dobbiamo validare l'utente attraverso lo username e la password.
+ Security config stabilisce le impostazioni con cui la validazione dev'essere effettuata*/
 package com.Engineering.prova.security;
 
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.io.Decoders;
-import io.jsonwebtoken.security.Keys;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import javax.crypto.SecretKey;
-import java.util.Date;
+@Configuration
+public class SecurityConfig {
 
-@Service // Questa classe, fornisce il servizio per la gestione dei token JWT
-public class JwtService {
-
-    @Value("${jwt.secret}") // prende in ingresso il valore del JWT, utile per verificarne la validità
-    private String secretKey;
-
-    @Value("${jwt.expiration-ms}") // prende in ingresso il tempo in ms in cui il Token può essere usato. Superato quel termine, il token non può più essere usato
-    private long expirationMs;
-
-    public String generateToken(String username) {
-        return Jwts.builder()
-                .subject(username)
-                .issuedAt(new Date())
-                .expiration(new Date(System.currentTimeMillis() + expirationMs))
-                .signWith(getKey())
-                .compact(); // permette di generare il token in base allo username, alla data di richiesta, al periodo di vita, alla chiave fornita dall'utente.
+    @Bean// Consente di criptare la password tramite un algoritmo di Hash (es. SHA-256)
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();// Restituisce un oggetto capace di criptare la password
     }
 
-    public String extractUsername(String token) {
-        return getClaims(token).getSubject();
-    } // fornisce lo username dell'utente in base al token
-
-    // verifica la validità del token in base al suo tempo di vita ed allo username a cui è associato
-    public boolean isTokenValid(String token, String username) {
-        Claims claims = getClaims(token);
-        boolean notExpired = claims.getExpiration().after(new Date());
-        return claims.getSubject().equals(username) && notExpired;
+    @Bean// controllore del login: prendendo in ingresso lo username e la password, ci dice se quello che abbiamo inserito risulta nel DB
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
+        return config.getAuthenticationManager();
     }
 
-    // fornisce in base al token il payload, ossia il contenuto del messaggio che l'utente vuole trasmettere/ricevere
-    private Claims getClaims(String token) {
-        return Jwts.parser()
-                .verifyWith(getKey())
-                .build()
-                .parseSignedClaims(token)
-                .getPayload();
-    }
+    @Bean//controlla che l'utente sia valido e autenticato, e che possa accedere alle risorse della pagina
+    public SecurityFilterChain securityFilterChain(HttpSecurity http, JwtAuthenticationFilter jwtFilter) throws Exception {
+        http.csrf(AbstractHttpConfigurer::disable);//disattiva la protezione CSRF (cross site request forgery). Serve in quanto, se provassimo ad usare POSTMAN o altri servizi simili, il sistema ccontinuerebbe a restituire errore continuamente
+        http.authorizeHttpRequests(auth -> { //definisce le regole con cui posso accedere tramite URI o URL
+            auth.requestMatchers("/api/auth/**", "/swagger-ui/**", "/v3/api-docs/**").permitAll();// se cerco di accedere alla pagina di login, il sistema mi consente di farlo
+            auth.anyRequest().authenticated();//se provo ad accedere ad una risorsa della pagina, devo per forza autenticarmi
+        });
 
-    // fornisce la chiave usata per cifrare la comunicazione a partire dal token generato
-    private SecretKey getKey() {
-        return Keys.hmacShaKeyFor(Decoders.BASE64.decode(secretKey));
+        http.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);//controlla se l'utente sia già stato autenticato. In quel caso, non è neccessario ripetere la procedura di autenticazione da zero
+        return http.build();
     }
 }
