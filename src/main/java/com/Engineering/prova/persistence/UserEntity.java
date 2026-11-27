@@ -3,15 +3,9 @@
 package com.Engineering.prova.persistence;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 
-@Entity//Creiamo una tabella che includa di defaul i metodi get e set per accedere alle variabili
+@Entity//Creiamo una tabella che includa i metodi get e set per accedere alle variabili
 @Table(name = "users")//si collega alla tabella definita nello script v4
-@Getter//include di default i metodi get
-@Setter//include di default i metodi set
-@NoArgsConstructor//include di default il costruttore privo di argomenti
 public class UserEntity {
 
     @Id// attributo che si collega alla chiave primaria della relazione users
@@ -26,4 +20,19 @@ public class UserEntity {
 
     @Column(name = "role", nullable = false, length = 30)
     private String role;// permette di modificare il ruolo dell'utente. Non può essere vuoto, e dev'essere lungo non più di 30 caratteri
+
+    public UserEntity() {// costruttore privo di argomenti richiesto da JPA
+    }
+
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
+
+    public String getUsername() { return username; }
+    public void setUsername(String username) { this.username = username; }
+
+    public String getPassword() { return password; }
+    public void setPassword(String password) { this.password = password; }
+
+    public String getRole() { return role; }
+    public void setRole(String role) { this.role = role; }
 }
