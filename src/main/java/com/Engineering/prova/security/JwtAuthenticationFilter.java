@@ -5,7 +5,6 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -16,11 +15,16 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import java.io.IOException;
 
 @Component
-@RequiredArgsConstructor//creiamo un entità che elabori lo JWT token e lo username dell'utente. Eredita le caratterische della classe madre OncePerFilter
+//creiamo un entità che elabori lo JWT token e lo username dell'utente. Eredita le caratterische della classe madre OncePerFilter
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final JwtService jwtService;// fornisce i servizi per autenticare il token JWT
     private final UserDetailsService userDetailsService;// fornisce i servizi per autenticare l'utente associato al token
+
+    public JwtAuthenticationFilter(JwtService jwtService, UserDetailsService userDetailsService) {
+        this.jwtService = jwtService;
+        this.userDetailsService = userDetailsService;
+    }
 
     @Override// funzione filtro, sovrascrive la funzione della classe madre
     protected void doFilterInternal(HttpServletRequest request,
