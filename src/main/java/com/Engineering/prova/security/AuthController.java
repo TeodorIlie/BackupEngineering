@@ -1,11 +1,7 @@
-/* A questo punto, una volta stabilite le policy di accesso, i token JWT e la crittografia, definiamo il controller con cui porter inserire i nostri dati
-*/
 package com.Engineering.prova.security;
 
 import com.Engineering.prova.persistence.UserEntity;
 import com.Engineering.prova.persistence.UserRepository;
-import com.Engineering.prova.security.JwtService;
-import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -13,13 +9,23 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/auth")// link URI di accesso
-@RequiredArgsConstructor// il costruttore dev'essere inizializzato!
 public class AuthController {
 
     private final UserRepository userRepository;// contiene i dati degli utenti nel DB
     private final PasswordEncoder passwordEncoder;// cifra la password tramite algoritmo di hash
     private final AuthenticationManager authenticationManager;// entità che autentica l'utente
     private final JwtService jwtService;
+
+    // Costruttore esplicito per inizializzare le dipendenze
+    public AuthController(UserRepository userRepository,
+                          PasswordEncoder passwordEncoder,
+                          AuthenticationManager authenticationManager,
+                          JwtService jwtService) {
+        this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
+        this.authenticationManager = authenticationManager;
+        this.jwtService = jwtService;
+    }
 
     @PostMapping("/register")// in questo caso, generiamo una chiamata POST per scrivere un utente all'interno del DB.
     public String register(@RequestBody AuthRequest request) {//la funzione riceve una richiesta di scrittura. Qualora l'utente esista, restituisce errore con il relativo messaggio
