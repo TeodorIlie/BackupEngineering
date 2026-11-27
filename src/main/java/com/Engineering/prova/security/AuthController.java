@@ -1,6 +1,6 @@
 /* A questo punto, una volta stabilite le policy di accesso, i token JWT e la crittografia, definiamo il controller con cui porter inserire i nostri dati
 */
-package com.Engineering.prova.web;
+package com.Engineering.prova.security;
 
 import com.Engineering.prova.persistence.UserEntity;
 import com.Engineering.prova.persistence.UserRepository;
