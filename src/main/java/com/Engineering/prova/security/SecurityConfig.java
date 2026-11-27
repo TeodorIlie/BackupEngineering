@@ -34,7 +34,7 @@ public class SecurityConfig {
         http.csrf(AbstractHttpConfigurer::disable);//disattiva la protezione CSRF (cross site request forgery). Serve in quanto, se provassimo ad usare POSTMAN o altri servizi simili, il sistema ccontinuerebbe a restituire errore continuamente
         http.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));//disattiva le sessioni stateful (JSESSIONID) perché usiamo JWT
         http.authorizeHttpRequests(auth -> { //definisce le regole con cui posso accedere tramite URI o URL
-            auth.requestMatchers("/api/auth/**", "/swagger-ui/**", "/v3/api-docs/**").permitAll();// se cerco di accedere alla pagina di login, il sistema mi consente di farlo
+            auth.requestMatchers("/api/auth/**", "/swagger-ui/**", "/v3/api-docs/**", "/error").permitAll();// se cerco di accedere alla pagina di login, il sistema mi consente di farlo
             auth.anyRequest().authenticated();//se provo ad accedere ad una risorsa della pagina, devo per forza autenticarmi
         });
 
